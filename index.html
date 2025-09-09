@@ -1,8 +1,80 @@
-<p>Hello 大家好</p>
-<p>我是霸都丶傲天，这是我的个人网站。 </p>
-<p>很高兴你来到这里, 你可以在以下的网站找到我</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Academy Staff Directory</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; }
+  .login { margin-bottom: 20px; }
+  .staff-container { display: flex; flex-wrap: wrap; gap: 20px; }
+  .staff-card { border: 1px solid #ccc; padding: 10px; width: 45%; box-sizing: border-box; }
+  .staff-card img { max-width: 100px; display: block; margin-bottom: 10px; }
+</style>
+</head>
+<body>
 
-<ul>
-  <li> <a href="https://www.zhihu.com/people/AJLoveChina">知乎</a> </li>
-  <li> <a href="http://hejie.nigeerhuo.com">我的博客(已经不更细了,现在在知乎写文章)</a> </li>
-</ul>
+<h1>Academy Staff Directory</h1>
+
+<div class="login">
+  <input type="text" id="username" placeholder="Username">
+  <input type="password" id="password" placeholder="Password">
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="staffList" class="staff-container" style="display:none;"></div>
+
+<script>
+const users = {
+  "student": "password123",
+  "researcher": "abc456"
+};
+
+function login() {
+  const username = document.getElementById('username').value;
+  const password = document.getElementById('password').value;
+  if(users[username] && users[username] === password) {
+    alert("Login successful!");
+    document.querySelector('.login').style.display = 'none';
+    loadStaff();
+  } else {
+    alert("Invalid credentials!");
+  }
+}
+
+async function loadStaff() {
+  const response = await fetch('staff.json');
+  const staff = await response.json();
+  const container = document.getElementById('staffList');
+  container.style.display = 'flex';
+  
+  for(let i = 0; i < staff.length; i+=2) {
+    const staff1 = staff[i];
+    const staff2 = staff[i+1];
+    
+    const card1 = createStaffCard(staff1);
+    container.appendChild(card1);
+    
+    if(staff2) {
+      const card2 = createStaffCard(staff2);
+      container.appendChild(card2);
+    }
+  }
+}
+
+function createStaffCard(staff) {
+  const div = document.createElement('div');
+  div.className = 'staff-card';
+  div.innerHTML = `
+    <img src="images/${staff.Photo}" alt="${staff.Name}">
+    <h3>${staff.Name}</h3>
+    <p><strong>Contact:</strong> ${staff.Contact}</p>
+    <p><strong>Research:</strong> ${staff.Research}</p>
+    <p><strong>Papers:</strong> ${staff.Papers}</p>
+  `;
+  return div;
+}
+</script>
+
+</body>
+</html>

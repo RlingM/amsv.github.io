@@ -4,77 +4,33 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Academy Staff Directory</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  .login { margin-bottom: 20px; }
-  .staff-container { display: flex; flex-wrap: wrap; gap: 20px; }
-  .staff-card { border: 1px solid #ccc; padding: 10px; width: 45%; box-sizing: border-box; }
-  .staff-card img { max-width: 100px; display: block; margin-bottom: 10px; }
-</style>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<h1>Academy Staff Directory</h1>
+<header>
+  <h1>Academy Staff Directory</h1>
+</header>
 
-<div class="login">
+<section class="login-section">
   <input type="text" id="username" placeholder="Username">
   <input type="password" id="password" placeholder="Password">
   <button onclick="login()">Login</button>
-</div>
+</section>
 
-<div id="staffList" class="staff-container" style="display:none;"></div>
+<section class="file-upload" style="display:none;">
+  <label for="excelFile">Upload Staff Excel:</label>
+  <input type="file" id="excelFile" accept=".xlsx,.xls">
+</section>
 
-<script>
-const users = {
-  "student": "password123",
-  "researcher": "abc456"
-};
+<section class="search-section" style="display:none;">
+  <input type="text" id="searchInput" placeholder="Search by name, research, or papers" oninput="searchStaff()">
+</section>
 
-function login() {
-  const username = document.getElementById('username').value;
-  const password = document.getElementById('password').value;
-  if(users[username] && users[username] === password) {
-    alert("Login successful!");
-    document.querySelector('.login').style.display = 'none';
-    loadStaff();
-  } else {
-    alert("Invalid credentials!");
-  }
-}
+<section id="staffList" class="staff-container"></section>
 
-async function loadStaff() {
-  const response = await fetch('staff.json');
-  const staff = await response.json();
-  const container = document.getElementById('staffList');
-  container.style.display = 'flex';
-  
-  for(let i = 0; i < staff.length; i+=2) {
-    const staff1 = staff[i];
-    const staff2 = staff[i+1];
-    
-    const card1 = createStaffCard(staff1);
-    container.appendChild(card1);
-    
-    if(staff2) {
-      const card2 = createStaffCard(staff2);
-      container.appendChild(card2);
-    }
-  }
-}
-
-function createStaffCard(staff) {
-  const div = document.createElement('div');
-  div.className = 'staff-card';
-  div.innerHTML = `
-    <img src="images/${staff.Photo}" alt="${staff.Name}">
-    <h3>${staff.Name}</h3>
-    <p><strong>Contact:</strong> ${staff.Contact}</p>
-    <p><strong>Research:</strong> ${staff.Research}</p>
-    <p><strong>Papers:</strong> ${staff.Papers}</p>
-  `;
-  return div;
-}
-</script>
+<script src="js/xlsx.full.min.js"></script>
+<script src="js/main.js"></script>
 
 </body>
 </html>

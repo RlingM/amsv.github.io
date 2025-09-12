@@ -1,70 +1,86 @@
+:root{
+  --accent:#0b4f6c;
+  --muted:#6b7280;
+  --card-bg:#fff;
+}
+
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 20px;
-  background-color: #f9f9f9;
-  color: #333;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: linear-gradient(180deg,#f5f7fa,#eef3f7);
+  color: #222;
+  margin: 0;
+  padding: 0 20px 40px;
 }
 
-header {
-  text-align: center;
-  margin-bottom: 20px;
+.site-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:20px 0;
 }
 
-.login-section, .file-upload, .search-section {
-  text-align: center;
-  margin-bottom: 20px;
+.site-header h1{ margin:0; color:var(--accent); }
+.header-right button{ padding:8px 12px; }
+
+.controls { text-align:center; margin-bottom:20px; }
+.controls input{ width:60%; padding:10px; border-radius:6px; border:1px solid #ddd; }
+
+.directory {
+  display:grid;
+  grid-template-columns: repeat(2, 1fr); /* 一行两列 */
+  gap:28px;
+  justify-items:center;
+  align-items:start;
+  max-width:1100px;
+  margin: 0 auto 20px;
 }
 
-input[type="text"], input[type="password"] {
-  padding: 8px;
-  margin: 5px;
-  width: 200px;
+/* 每个“页”只显示两位（通过 JS 控制分页），卡片尺寸放大避免拥挤 */
+.card {
+  background:var(--card-bg);
+  width: 520px;         /* 每栏宽度偏大，使得每页只有两张卡 */
+  padding:20px;
+  border-radius:12px;
+  box-shadow: 0 8px 20px rgba(12,35,50,0.08);
+  display:flex;
+  gap:18px;
+  align-items:flex-start;
+  box-sizing:border-box;
 }
 
-button {
-  padding: 8px 15px;
-  margin-left: 5px;
-  background-color: #2c3e50;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
+.card img {
+  width:140px;height:140px;border-radius:8px; object-fit:cover; flex-shrink:0;
 }
 
-button:hover {
-  background-color: #34495e;
+.card .info {
+  flex:1;
 }
 
-.staff-container {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  justify-content: center;
+.card h3{ margin:0 0 6px 0; color:var(--accent); }
+.card p{ margin:6px 0; color:var(--muted); }
+
+.card a.profile-link {
+  display:inline-block; margin-top:10px; text-decoration:none; color:#fff;
+  background:var(--accent); padding:8px 12px; border-radius:8px;
 }
 
-.staff-card {
-  border: 1px solid #ccc;
-  padding: 15px;
-  width: 300px;
-  background-color: white;
-  border-radius: 10px;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+/* pagination */
+.pagination { text-align:center; margin-top:6px; }
+.pagination button{ padding:8px 10px; margin:0 8px }
+
+/* Admin panel */
+.admin-panel {
+  position: fixed;
+  right: 20px; top:80px;
+  width:320px;
+  background:white;
+  padding:14px;
+  border-radius:10px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.12);
+  z-index:1000;
 }
 
-.staff-card img {
-  max-width: 120px;
-  border-radius: 50%;
-  margin-bottom: 10px;
-}
+.note { font-size:12px; color:#b33; }
 
-.staff-card h3 {
-  margin: 5px 0;
-  color: #2c3e50;
-}
-
-.staff-card p {
-  margin: 5px 0;
-  font-size: 14px;
-}
-
+/* profile page */
+.profile-main { max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; }

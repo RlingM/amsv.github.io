@@ -1,36 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="zh">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>Academy Staff Directory</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-<header>
+<header class="site-header">
   <h1>Academy Staff Directory</h1>
+  <div class="header-right">
+    <button id="adminBtn" onclick="toggleAdminPanel()">管理员</button>
+  </div>
 </header>
 
-<section class="login-section">
-  <input type="text" id="username" placeholder="Username">
-  <input type="password" id="password" placeholder="Password">
-  <button onclick="login()">Login</button>
-</section>
+<main class="main">
+  <section class="controls">
+    <input id="searchInput" type="text" placeholder="搜索姓名 / 办公室 / 邮箱 / 电话" oninput="searchStaff()" />
+  </section>
 
-<section class="file-upload" style="display:none;">
-  <label for="excelFile">Upload Staff Excel:</label>
-  <input type="file" id="excelFile" accept=".xlsx,.xls">
-</section>
+  <section id="directory" class="directory">
+    <!-- 教师卡片由 JS 渲染 -->
+  </section>
 
-<section class="search-section" style="display:none;">
-  <input type="text" id="searchInput" placeholder="Search by name, research, or papers" oninput="searchStaff()">
-</section>
+  <div class="pagination">
+    <button id="prevBtn" onclick="prevPage()">上一页</button>
+    <span id="pageInfo">第 1 页</span>
+    <button id="nextBtn" onclick="nextPage()">下一页</button>
+  </div>
+</main>
 
-<section id="staffList" class="staff-container"></section>
+<!-- 管理面板 (隐藏) -->
+<aside id="adminPanel" class="admin-panel" style="display:none;">
+  <h2>管理员面板</h2>
+  <label>用户名： <input id="adminUser" type="text" placeholder="admin"></label>
+  <label>密码： <input id="adminPass" type="password" placeholder="password"></label>
+  <button onclick="adminLogin()">登录</button>
+
+  <hr>
+  <div id="adminActions" style="display:none;">
+    <p>上传新的 Excel（站点会用此文件更新显示）:</p>
+    <input type="file" id="uploadExcel" accept=".xlsx,.xls" />
+    <button onclick="uploadExcel()">上传并应用（浏览器内）</button>
+
+    <p style="margin-top:10px;"><strong>可选：将文件提交到 GitHub 仓库（需要 Token）</strong></p>
+    <label>GitHub Token: <input id="ghToken" type="password" placeholder="ghp_xxx..."></label>
+    <label>Repo (owner/repo): <input id="ghRepo" type="text" placeholder="youruser/yourrepo"></label>
+    <label>目标路径 (例如 staff.xlsx): <input id="ghPath" type="text" value="staff.xlsx"></label>
+    <button onclick="uploadToGithub()">上传并提交到 GitHub</button>
+    <p class="note">注意：在浏览器输入 PAT 有安全风险。仅在受信环境下使用此功能。</p>
+  </div>
+
+  <button onclick="toggleAdminPanel()">关闭</button>
+</aside>
 
 <script src="js/xlsx.full.min.js"></script>
 <script src="js/main.js"></script>
-
 </body>
 </html>

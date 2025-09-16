@@ -1,62 +1,95 @@
 <!doctype html>
 <html lang="zh">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Academy Staff Directory</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Academy Staff Directory</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* 如果你还没把 style.css 放好，可以把关键样式放在这里作临时备用（可删除） */
+    /* minimal fallback to avoid totally broken look */
+    .site-header { display:flex; justify-content:space-between; align-items:center; padding:18px 0; }
+    .site-header h1 { margin:0; color:#0b4f6c; }
+    .controls { text-align:center; margin-bottom:12px; }
+    .controls input { width:60%; padding:10px; border-radius:6px; border:1px solid #ddd; }
+    .hint { text-align:center; color:#666; margin-top:8px; }
+  </style>
 </head>
 <body>
-<header class="site-header">
-  <h1>Academy Staff Directory</h1>
-  <div class="header-right">
-    <button id="adminBtn" onclick="toggleAdminPanel()">管理员</button>
-  </div>
-</header>
+  <header class="site-header">
+    <h1>Academy Staff Directory</h1>
+    <div class="header-right">
+      <button id="adminBtn" onclick="toggleAdminPanel()">管理员</button>
+    </div>
+  </header>
 
-<main class="main">
-  <section class="controls">
-    <input id="searchInput" type="text" placeholder="搜索姓名 / 办公室 / 邮箱 / 电话 / 研究方向" oninput="searchStaff()" />
-  </section>
+  <main class="main">
+    <section class="controls">
+      <input id="searchInput" type="text" placeholder="搜索姓名 / 办公室 / 邮箱 / 电话 / 研究方向" oninput="searchStaff()" />
+    </section>
 
-  <!-- 这是滚动容器：每一个 .page 包含两张卡片（并排） -->
-  <section id="scrollContainer" class="scroll-container">
-    <!-- JS 会生成多个 .page，每页两位 -->
-  </section>
+    <!-- 滚动容器：每个 .page 显示两位教师（由 js 渲染） -->
+    <section id="scrollContainer" class="scroll-container" aria-live="polite"></section>
 
-  <div class="hint">用鼠标滚轮或触控板滚动来翻页 — 每页显示两位教师</div>
-</main>
+    <div class="hint">用鼠标滚轮或触控板滚动来翻页 — 每页显示两位教师</div>
+  </main>
 
-<!-- 管理面板（与之前相同，省略部分重复说明） -->
-<aside id="adminPanel" class="admin-panel" style="display:none;">
-  <h2>管理员面板</h2>
-  <label>用户名： <input id="adminUser" type="text" placeholder="admin"></label>
-  <label>密码： <input id="adminPass" type="password" placeholder="password"></label>
-  <button onclick="adminLogin()">登录</button>
-  <hr>
-  <div id="adminActions" style="display:none;">
-    <p>上传新的 Excel（站点会用此文件更新显示）:</p>
-    <input type="file" id="uploadExcel" accept=".xlsx,.xls" />
-    <button onclick="uploadExcel()">上传并应用（浏览器内）</button>
-    <p class="note">可选：将文件提交到 GitHub（需 PAT） — 在受信环境使用</p>
-    <!-- github upload fields 如需保留可加入 -->
-  </div>
-  <button onclick="toggleAdminPanel()">关闭</button>
-</aside>
+  <!-- 管理面板（默认隐藏） -->
+  <aside id="adminPanel" class="admin-panel" style="display:none;">
+    <h2>管理员面板</h2>
 
-<!-- 海报模态（隐藏） -->
-<div id="posterModal" class="modal" style="display:none;">
-  <div class="modal-body">
-    <h3>生成海报预览</h3>
-    <canvas id="posterCanvas" width="1200" height="1600"></canvas>
-    <div class="modal-actions">
-      <button onclick="downloadPoster()">下载 PNG</button>
-      <button onclick="closePoster()">关闭</button>
+    <div>
+      <label>用户名： <input id="adminUser" type="text" placeholder="admin"></label><br><br>
+      <label>密码： <input id="adminPass" type="password" placeholder="password"></label><br><br>
+      <button onclick="adminLogin()">登录</button>
+    </div>
+
+    <hr>
+
+    <div id="adminActions" style="display:none;">
+      <p>上传新的 Excel（站点会用此文件更新显示，浏览器内生效）：</p>
+      <input type="file" id="uploadExcel" accept=".xlsx,.xls" />
+      <button onclick="uploadExcel()">上传并应用（仅在当前浏览器生效）</button>
+
+      <p style="margin-top:12px;"><strong>可选：提交到 GitHub（需 PAT）</strong></p>
+      <p class="note">为安全考虑，生产环境不要在浏览器直接输入 Token。推荐使用 GitHub Action 或后端替代。</p>
+
+      <!-- 可按需加入 GitHub 上传字段（脚本中未启用上传函数时可留空） -->
+      <div style="margin-top:8px;">
+        <label>GitHub Token: <input id="ghToken" type="password" placeholder="ghp_xxx..."></label><br>
+        <label>Repo (owner/repo): <input id="ghRepo" type="text" placeholder="youruser/yourrepo"></label><br>
+        <label>目标路径 (例如 staff.xlsx): <input id="ghPath" type="text" value="staff.xlsx"></label><br>
+        <!-- 如果你需要，我可以提供 uploadToGithub() 的代码 -->
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <button onclick="toggleAdminPanel()">关闭</button>
+    </div>
+  </aside>
+
+  <!-- 海报模态（canvas） -->
+  <div id="posterModal" class="modal" style="display:none;">
+    <div class="modal-body">
+      <h3>生成海报预览</h3>
+      <canvas id="posterCanvas" width="1200" height="1600" aria-label="海报预览"></canvas>
+      <div class="modal-actions">
+        <button onclick="downloadPoster()">下载 PNG</button>
+        <button onclick="closePoster()">关闭</button>
+      </div>
     </div>
   </div>
-</div>
 
-<script src="js/xlsx.full.min.js"></script>
-<script src="js/main.js"></script>
+  <!-- 友好提示：如果 JS 未加载，提示用户 -->
+  <noscript>
+    <p style="color:#b33; text-align:center; margin-top:20px;">
+      本站需要启用 JavaScript 才能正常工作。请启用 JavaScript 或联系管理员获取离线目录。
+    </p>
+  </noscript>
+
+  <!-- SheetJS（用于解析 Excel） -->
+  <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+  <!-- 你的 main.js（用户已要求完整 main.js） -->
+  <script src="js/main.js"></script>
 </body>
 </html>

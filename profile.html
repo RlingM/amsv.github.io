@@ -8,22 +8,20 @@
 </head>
 <body>
 <header class="site-header">
-  <h1>教师个人主页</h1>
+  <h1 id="profileTitle">教师个人主页</h1>
   <a href="index.html">回目录</a>
 </header>
 
 <main class="profile-main" id="profileMain">
-  <!-- JS 会渲染教师完整信息 -->
   <div id="profileContent">正在加载...</div>
 </main>
 
 <script src="js/xlsx.full.min.js"></script>
 <script src="js/main.js"></script>
 <script>
-  // 页面加载后，页面会读取 URL 参数 ?id=N 或 #id=N（N 为索引）
   document.addEventListener('DOMContentLoaded', async () => {
-    await loadStaffData(); // main.js 中的函数，确保数据已载入
-    renderProfileFromUrl();
+    await loadStaffData(); // 从 main.js 读取/解析 staff.xlsx 或 staff.json
+    renderProfileFromUrl(); // main.js 中实现，统一展示
   });
 </script>
 </body>

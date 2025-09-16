@@ -18,27 +18,41 @@ body {
   align-items:center;
   padding:20px 0;
 }
-
 .site-header h1{ margin:0; color:var(--accent); }
 .header-right button{ padding:8px 12px; }
 
-.controls { text-align:center; margin-bottom:20px; }
+.controls { text-align:center; margin-bottom:12px; }
 .controls input{ width:60%; padding:10px; border-radius:6px; border:1px solid #ddd; }
 
-.directory {
-  display:grid;
-  grid-template-columns: repeat(2, 1fr); /* 一行两列 */
-  gap:28px;
-  justify-items:center;
-  align-items:start;
-  max-width:1100px;
-  margin: 0 auto 20px;
+/* 滚动容器：垂直方向每页一个 .page（每 .page 包含两张卡） */
+.scroll-container {
+  height: 78vh;                /* 显示区域高度 —— 调整可使卡片更大 */
+  overflow-y: auto;
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  display: block;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 10px 0;
 }
 
-/* 每个“页”只显示两位（通过 JS 控制分页），卡片尺寸放大避免拥挤 */
+/* 每页（scroll snap） */
+.page {
+  scroll-snap-align: start;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* 每页两栏并排显示 */
+  gap: 28px;
+  align-items: start;
+  justify-items: center;
+  padding: 18px 6px;
+  box-sizing: border-box;
+  height: calc(78vh - 36px); /* 让每页占满视口（减去一些 padding） */
+}
+
+/* 卡片（放大） */
 .card {
   background:var(--card-bg);
-  width: 520px;         /* 每栏宽度偏大，使得每页只有两张卡 */
+  width: 520px;
   padding:20px;
   border-radius:12px;
   box-shadow: 0 8px 20px rgba(12,35,50,0.08);
@@ -46,29 +60,43 @@ body {
   gap:18px;
   align-items:flex-start;
   box-sizing:border-box;
+  transition: transform .18s ease;
 }
+.card:hover { transform: translateY(-6px); }
 
 .card img {
-  width:140px;height:140px;border-radius:8px; object-fit:cover; flex-shrink:0;
+  width:180px;height:180px;border-radius:8px; object-fit:cover; flex-shrink:0; cursor:pointer;
 }
 
-.card .info {
-  flex:1;
-}
-
-.card h3{ margin:0 0 6px 0; color:var(--accent); }
+.card .info { flex:1; }
+.card h3{ margin:0 0 6px 0; color:var(--accent); cursor:pointer; }
 .card p{ margin:6px 0; color:var(--muted); }
 
+/* profile link button */
+.card .links { margin-top:8px; }
 .card a.profile-link {
-  display:inline-block; margin-top:10px; text-decoration:none; color:#fff;
+  display:inline-block; margin-right:8px; text-decoration:none; color:#fff;
   background:var(--accent); padding:8px 12px; border-radius:8px;
 }
 
-/* pagination */
-.pagination { text-align:center; margin-top:6px; }
-.pagination button{ padding:8px 10px; margin:0 8px }
+/* 提示 */
+.hint { text-align:center; color:var(--muted); margin-top:8px; }
 
-/* Admin panel */
+/* modal for poster */
+.modal {
+  position: fixed; inset: 0; display:flex; align-items:center; justify-content:center;
+  background: rgba(0,0,0,0.45); z-index:2000;
+}
+.modal-body {
+  background:white; padding:18px; border-radius:10px; max-width:90%; max-height:90%; overflow:auto;
+  display:flex; flex-direction:column; gap:12px; align-items:center;
+}
+.modal-actions { display:flex; gap:10px; }
+
+/* profile page */
+.profile-main { max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; }
+
+/* admin panel */
 .admin-panel {
   position: fixed;
   right: 20px; top:80px;
@@ -79,8 +107,4 @@ body {
   box-shadow:0 8px 30px rgba(0,0,0,0.12);
   z-index:1000;
 }
-
 .note { font-size:12px; color:#b33; }
-
-/* profile page */
-.profile-main { max-width:900px; margin:20px auto; background:white; padding:20px; border-radius:10px; }

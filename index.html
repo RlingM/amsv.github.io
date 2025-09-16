@@ -16,43 +16,45 @@
 
 <main class="main">
   <section class="controls">
-    <input id="searchInput" type="text" placeholder="搜索姓名 / 办公室 / 邮箱 / 电话" oninput="searchStaff()" />
+    <input id="searchInput" type="text" placeholder="搜索姓名 / 办公室 / 邮箱 / 电话 / 研究方向" oninput="searchStaff()" />
   </section>
 
-  <section id="directory" class="directory">
-    <!-- 教师卡片由 JS 渲染 -->
+  <!-- 这是滚动容器：每一个 .page 包含两张卡片（并排） -->
+  <section id="scrollContainer" class="scroll-container">
+    <!-- JS 会生成多个 .page，每页两位 -->
   </section>
 
-  <div class="pagination">
-    <button id="prevBtn" onclick="prevPage()">上一页</button>
-    <span id="pageInfo">第 1 页</span>
-    <button id="nextBtn" onclick="nextPage()">下一页</button>
-  </div>
+  <div class="hint">用鼠标滚轮或触控板滚动来翻页 — 每页显示两位教师</div>
 </main>
 
-<!-- 管理面板 (隐藏) -->
+<!-- 管理面板（与之前相同，省略部分重复说明） -->
 <aside id="adminPanel" class="admin-panel" style="display:none;">
   <h2>管理员面板</h2>
   <label>用户名： <input id="adminUser" type="text" placeholder="admin"></label>
   <label>密码： <input id="adminPass" type="password" placeholder="password"></label>
   <button onclick="adminLogin()">登录</button>
-
   <hr>
   <div id="adminActions" style="display:none;">
     <p>上传新的 Excel（站点会用此文件更新显示）:</p>
     <input type="file" id="uploadExcel" accept=".xlsx,.xls" />
     <button onclick="uploadExcel()">上传并应用（浏览器内）</button>
-
-    <p style="margin-top:10px;"><strong>可选：将文件提交到 GitHub 仓库（需要 Token）</strong></p>
-    <label>GitHub Token: <input id="ghToken" type="password" placeholder="ghp_xxx..."></label>
-    <label>Repo (owner/repo): <input id="ghRepo" type="text" placeholder="youruser/yourrepo"></label>
-    <label>目标路径 (例如 staff.xlsx): <input id="ghPath" type="text" value="staff.xlsx"></label>
-    <button onclick="uploadToGithub()">上传并提交到 GitHub</button>
-    <p class="note">注意：在浏览器输入 PAT 有安全风险。仅在受信环境下使用此功能。</p>
+    <p class="note">可选：将文件提交到 GitHub（需 PAT） — 在受信环境使用</p>
+    <!-- github upload fields 如需保留可加入 -->
   </div>
-
   <button onclick="toggleAdminPanel()">关闭</button>
 </aside>
+
+<!-- 海报模态（隐藏） -->
+<div id="posterModal" class="modal" style="display:none;">
+  <div class="modal-body">
+    <h3>生成海报预览</h3>
+    <canvas id="posterCanvas" width="1200" height="1600"></canvas>
+    <div class="modal-actions">
+      <button onclick="downloadPoster()">下载 PNG</button>
+      <button onclick="closePoster()">关闭</button>
+    </div>
+  </div>
+</div>
 
 <script src="js/xlsx.full.min.js"></script>
 <script src="js/main.js"></script>
